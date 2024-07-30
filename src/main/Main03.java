@@ -1,7 +1,6 @@
 package main;
 
 import entities.Robo;
-import entities.Robo02;
 import entities.RoboInteligente;
 import exception.MovimentoInvalidoException;
 
@@ -12,8 +11,9 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Main03 {
+	
     public static void main(String[] args){
-        Robo rNSebo = new Robo02("branco");
+        Robo rNSebo = new Robo("branco");
         Robo rEuSabo = new RoboInteligente("preto");
         Scanner sc = new Scanner(System.in);
         char[][] mat = new char[4][4];
@@ -33,7 +33,7 @@ public class Main03 {
         sc.close();
     }
 
-    public static void printarMatriz(char[][] mat){
+    private static void printarMatriz(char[][] mat){
         for(int i = 0; i<4; i++){
             System.out.print("[");
             for(int j = 0; j<4; j++){
@@ -43,7 +43,7 @@ public class Main03 {
         }
     }
 
-    public static void moveLoop(Robo r1, Robo r2, int[] food, char[][] mat){
+    private static void moveLoop(Robo r1, Robo r2, int[] food, char[][] mat){
         int move = 0, mv1 = 0, mv2 = 0, v1 = 0, v2 = 0, v = 1, i= 0;
         Random rd = new Random();
         List<Integer> BlackList = new ArrayList<>();
@@ -61,7 +61,7 @@ public class Main03 {
                     printarMatriz(mat);
                     mat[r1.getCoord()[0]][r1.getCoord()[1]] = '-';
                     move = rd.nextInt(4);
-                    ((Robo02) r1).Mover2(move + 1);
+                    ((Robo) r1).Mover(Integer.toString(move + 1));
                     mat[r1.getCoord()[0]][r1.getCoord()[1]] = 'B';
                     mv1++;
                     if(r1.isFoodFound(food)) {
@@ -88,7 +88,7 @@ public class Main03 {
                     while(BlackList.contains(move)){
                         move = rd.nextInt(4);
                     }
-                    r2.Mover(move + 1);
+                    r2.Mover(Integer.toString(move + 1));
                     BlackList.clear();
                     i = 0;
                     mat[r2.getCoord()[0]][r2.getCoord()[1]] = 'P';

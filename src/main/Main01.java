@@ -26,16 +26,16 @@ public class Main01 {
 			move = scn.nextLine();
             /**Esses if e elif é para caso o usuário digitar um número em vez de String */
             if(move.charAt(0) == '1'){
-                robo.Mover(1);
+                robo.Mover("1");
             }
             else if(move.charAt(0) == '2'){
-                robo.Mover(2);
+                robo.Mover("2");
             }
             else if(move.charAt(0) == '3'){
-                robo.Mover(3);
+                robo.Mover("2");
             }
             else if(move.charAt(0) == '4'){
-                robo.Mover(4);
+                robo.Mover("4");
             }
             else{
                 robo.Mover(move);

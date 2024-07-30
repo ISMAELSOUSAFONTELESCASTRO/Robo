@@ -1,7 +1,6 @@
 package main;
 
 import entities.Robo;
-import entities.Robo02;
 import exception.MovimentoInvalidoException;
 
 import java.util.Random;
@@ -9,8 +8,8 @@ import java.util.Random;
 import java.util.Scanner;
 public class Main02 {
     public static void main(String[] args){
-        Robo robo01 = new Robo02("branco");
-        Robo robo02 = new Robo02("preto");
+        Robo robo01 = new Robo("branco");
+        Robo robo02 = new Robo("preto");
         Scanner teclado = new Scanner(System.in);
         int[] food = new int[2];
 		food[0] = teclado.nextInt();
@@ -30,7 +29,7 @@ public class Main02 {
                     System.out.printf("Vez do robo %s\n", r1.getColor());
                     System.out.printf("(%d,%d)\n", r1.getCoord()[0], r1.getCoord()[1]);
                     move = rd.nextInt(4);
-                    r1.Mover(move + 1);
+                    r1.Mover(Integer.toString(move + 1));
                     mv1++;
                     if(r1.isFoodFound(food)) {
                         System.out.printf("(%d,%d)", r1.getCoord()[0], r1.getCoord()[1]);
@@ -47,7 +46,7 @@ public class Main02 {
                     System.out.printf("Vez do robo %s\n", r2.getColor());
                     System.out.printf("(%d,%d)\n", r2.getCoord()[0], r2.getCoord()[1]);
                     move = rd.nextInt(4);
-                    r2.Mover(move + 1);
+                    r2.Mover(Integer.toString(move + 1));
                     mv2++;
                     if(r2.isFoodFound(food)) {
         	            System.out.printf("(%d,%d)", r2.getCoord()[0], r2.getCoord()[1]);
