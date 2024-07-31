@@ -3,6 +3,9 @@ package visual;
 import entities.Robo;
 import entities.RoboInteligente;
 import exception.MovimentoInvalidoException;
+import objects.Bomba;
+import objects.Obstaculo;
+import objects.Rocha;
 
 import java.util.Random;
 import javax.swing.*;
@@ -37,14 +40,25 @@ public class Visual {
     private static JLabel roboAzul = new JLabel(new ImageIcon(Visual.class.getResource("/imagens/roboAzul.png")));
     private static JLabel roboVerde = new JLabel(new ImageIcon(Visual.class.getResource("/imagens/roboVerde.png")));
     private JLabel alimento = new JLabel(new ImageIcon(Visual.class.getResource("/imagens/alimento.png")));
-    private JLabel rochas = new JLabel(new ImageIcon(Visual.class.getResource("/imagens/pedras.png")));
-    private JLabel explosao = new JLabel(new ImageIcon(Visual.class.getResource("/imagens/explosao.png")));
+    private JLabel[] rochas = {
+            new JLabel(new ImageIcon(Visual.class.getResource("/imagens/pedras.png"))),
+            new JLabel(new ImageIcon(Visual.class.getResource("/imagens/pedras.png")))
+    };
+    private static JLabel[] explosoes = {
+            new JLabel(new ImageIcon(Visual.class.getResource("/imagens/explosao.png"))),
+            new JLabel(new ImageIcon(Visual.class.getResource("/imagens/explosao.png")))
+    };
+
 
     private String cor;
     private Robo robo;
     private int[] lugarComida = new int[2];
     private int[][] lugarRocha = new int[2][2];
-    private int[][] lugarExplosao = new int[2][2];
+    private static int[][] lugarExplosao = new int[2][2];
+    private int numPedra2, numBomba2;
+    private Obstaculo[] pedras;
+    private Obstaculo[] bombas;
+
 
     public void telaInicial(){
         telaInicial.setIconImage(logo.getImage());
@@ -84,8 +98,11 @@ public class Visual {
         String[] opcoes = {"0", "1", "2"};
         Object numPedra1 = JOptionPane.showInputDialog(null, "Escolha a quantia de pedras", "Obstáculos", JOptionPane.INFORMATION_MESSAGE, comida, opcoes, 0);
         Object numBomba1 = JOptionPane.showInputDialog(null, "Escolha a quantia de bombas", "Obstáculos", JOptionPane.INFORMATION_MESSAGE, comida, opcoes, 0);
-        int numPedra2 = Integer.parseInt((String) numPedra1);
-        int numBomba2 = Integer.parseInt((String) numBomba1);
+        numPedra2 = Integer.parseInt((String) numPedra1);
+        numBomba2 = Integer.parseInt((String) numBomba1);
+
+        pedras = new Rocha[numPedra2];
+        bombas = new Bomba[numBomba2];
 
         for(int i=0;i<numPedra2;i++){
             Object linha1 = JOptionPane.showInputDialog(null, "Escolha a linha da rocha "+i, "Obstáculos", JOptionPane.INFORMATION_MESSAGE, comida, opcoes, 0);
@@ -95,7 +112,9 @@ public class Visual {
 
             lugarRocha[i][0] = linha2;
             lugarRocha[i][1] = coluna2;
-            casasValidas[linha2][coluna2].add(rochas);
+            Obstaculo pedra = new Rocha(lugarRocha[i]);
+            pedras[i] = pedra;
+            casasValidas[linha2][coluna2].add(rochas[i]);
             casasValidas[linha2][coluna2].repaint();
             casasValidas[linha2][coluna2].revalidate();
         }
@@ -108,7 +127,9 @@ public class Visual {
 
             lugarExplosao[i][0] = linha2;
             lugarExplosao[i][1] = coluna2;
-            casasValidas[linha2][coluna2].add(explosao);
+            Obstaculo bomba = new Bomba(lugarExplosao[i]);
+            bombas[i] = bomba;
+            casasValidas[linha2][coluna2].add(explosoes[i]);
             casasValidas[linha2][coluna2].repaint();
             casasValidas[linha2][coluna2].revalidate();
         }
@@ -168,6 +189,14 @@ public class Visual {
         mesa.add(andar);
         mesa.repaint();
         mesa.revalidate();
+    }
+
+    public static void bateuPedra(String cor){
+        if(cor.equals("verde")){
+            JOptionPane.showMessageDialog(null, "Robô verde bateu na rocha", "Rocha", JOptionPane.ERROR_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(null, "Robô azul bateu na rocha", "Rocha", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     public static void excessao(){
@@ -277,7 +306,63 @@ public class Visual {
         comecar4.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                RoboInteligente robo1 = new RoboInteligente("verde");
+                Robo robo2 = new Robo("azul");
 
+                int primeiro=0;
+
+                while (true) {
+                    Random rd = new Random();
+                    if(!robo1.isFoodFound(lugarComida) && robo1.isAlive) {
+                        int move1 = rd.nextInt(4) + 1;
+                        try {
+                            robo1.Mover(Integer.toString(move1));
+                            for(int i=0;i<numPedra2;i++){
+                                pedras[i].bater(robo1, i);
+                            }
+                            for(int i=0;i<numBomba2;i++){
+                                bombas[i].bater(robo1, i);
+                            }
+                        } catch (MovimentoInvalidoException ex) {}
+                    } else if(robo1.isFoodFound(lugarComida)){
+                        primeiro = 1;
+                    }
+
+                    if(!robo2.isFoodFound(lugarComida) && robo2.isAlive) {
+                        int move2 = rd.nextInt(4) + 1;
+                        try {
+                            robo2.Mover(Integer.toString(move2));
+                            for(int i=0;i<numPedra2;i++){
+                                pedras[i].bater(robo2, i);
+                            }
+                            for(int i=0;i<numBomba2;i++){
+                                bombas[i].bater(robo2, i);
+                            }
+                        } catch (MovimentoInvalidoException ex) {}
+                    } else if(robo2.isFoodFound(lugarComida)){
+                        primeiro = 2;
+                    }
+
+                    if(robo1.isFoodFound(lugarComida) && robo2.isFoodFound(lugarComida)){
+                        if(primeiro == 1){
+                            JOptionPane.showMessageDialog(null, "VERDE ACHOU A COMIDA PRIMEIRO!! \nMovimentos válidos do verde: " + robo1.getMvRobo() + "\nMovimentos inválidos do verde: " + robo1.getMvRobo() + "\nMovimentos válidos do azul: " + robo2.getMvRobo() + "\nMovimentos inválidos do azul: " + robo2.getMiRobo(), "Parabéns", JOptionPane.INFORMATION_MESSAGE);
+                            System.exit(0);
+                        }
+                        else{
+                            JOptionPane.showMessageDialog(null, "AZUL ACHOU A COMIDA PRIMEIRO!! \nMovimentos válidos do azul: " + robo2.getMvRobo() + "\nMovimentos inválidos do azul: " + robo2.getMiRobo() + "\nMovimentos válidos do verde: " + robo1.getMvRobo() + "\nMovimentos inválidos do verde: " + robo1.getMiRobo(), "Parabéns", JOptionPane.INFORMATION_MESSAGE);
+                            System.exit(0);
+                        }
+                    } else if(robo1.isFoodFound(lugarComida) && !robo2.isAlive){
+                        JOptionPane.showMessageDialog(null, "VERDE ACHOU A COMIDA E O AZUL MORREU!! \nMovimentos válidos do verde: " + robo1.getMvRobo() + "\nMovimentos inválidos do verde: " + robo1.getMvRobo() + "\nMovimentos válidos do azul: " + robo2.getMvRobo() + "\nMovimentos inválidos do azul: " + robo2.getMiRobo(), "Parabéns", JOptionPane.INFORMATION_MESSAGE);
+                        System.exit(0);
+                    } else if(robo2.isFoodFound(lugarComida) && !robo1.isAlive){
+                        JOptionPane.showMessageDialog(null, "AZUL ACHOU A COMIDA E O VERDE MORREU!! \nMovimentos válidos do azul: " + robo2.getMvRobo() + "\nMovimentos inválidos do azul: " + robo2.getMiRobo() + "\nMovimentos válidos do verde: " + robo1.getMvRobo() + "\nMovimentos inválidos do verde: " + robo1.getMiRobo(), "Parabéns", JOptionPane.INFORMATION_MESSAGE);
+                        System.exit(0);
+                    } else if(!robo1.isAlive && !robo2.isAlive){
+                        JOptionPane.showMessageDialog(null, "AMBOS MORRERAM!! \nMovimentos válidos do verde: " + robo1.getMvRobo() + "\nMovimentos inválidos do verde: " + robo1.getMvRobo() + "\nMovimentos válidos do azul: " + robo2.getMvRobo() + "\nMovimentos inválidos do azul: " + robo2.getMiRobo(), "Parabéns", JOptionPane.ERROR_MESSAGE);
+                        System.exit(0);
+                    }
+                }
             }
         });
         mesa.add(comecar4);
@@ -348,8 +433,25 @@ public class Visual {
                 obstaculos();
                 mesa();
                 comecar4();
+                addRobo(0,0,"verde");
+                addRobo(0,0,"azul");
             }
         });
+    }
+
+    public static void removerBomba(int linha, int coluna, int i){
+        casasValidas[linha][coluna].remove(explosoes[i]);
+        lugarExplosao = null;
+        casasValidas[linha][coluna].repaint();
+        casasValidas[linha][coluna].revalidate();
+    }
+
+    public static void morreu(String cor){
+        if(cor.equals("verde")) {
+            JOptionPane.showMessageDialog(null, "O robô verde morreu!!", "Morreu", JOptionPane.ERROR_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(null, "O robô azul morreu!!", "Morreu", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     public void mesa(){
