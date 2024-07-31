@@ -1,14 +1,9 @@
-package Objects;
+package objects;
 import entities.*;
 
 public abstract class Obstaculo {
-	
-	String id;
-	int[] coord;
-	
-	public abstract void bater(Robo r);
-	
-	
-	
 
+    int[] coord;
+
+    public abstract void bater(Robo r, int i);
 }
