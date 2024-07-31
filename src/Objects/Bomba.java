@@ -10,9 +10,11 @@ public class Bomba extends Obstaculo{
 	}
 	
 	public void bater(Robo r) {
+		if(isAtiva == true){
 		if(r.getCoord() == coord) {
 			r.isAlive = false;
 			isAtiva = false;
+		}
 		}
 	}
 	
