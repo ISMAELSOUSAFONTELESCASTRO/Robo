@@ -4,16 +4,16 @@ import visual.*;
 import exception.MovimentoInvalidoException;
 
 public class Robo {
-	
-	public boolean isAlive;
 
-    protected String color;/**mudei para protected por causa da herança */
+    public boolean isAlive;
+
+    protected String color;
     protected int [] coord = new int[2];
     public int [] precoord = new int[2];
     protected int miRobo=0, mvRobo=0;
-    /**O this só é necessário quando tem variáveis com o mesmo nome, só no python que é preciso dele toda vez q chamar a variavel */
+
     public Robo(String color) {
-    	isAlive = true;
+        isAlive = true;
         setColor(color);
         int[] inicio = {0,0};
         setCoord(inicio);
@@ -26,6 +26,14 @@ public class Robo {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public int getCoord(int i){
+        if(i == 0){
+            return coord[0];
+        } else {
+            return coord[1];
+        }
     }
 
     public int[] getCoord() {
@@ -45,53 +53,57 @@ public class Robo {
     }
 
     public void Mover(String mov) throws MovimentoInvalidoException{
-    	precoord = coord;
+        precoord = coord;
         if(mov.equals("up") || mov.equals("1")) {
-            if(coord[0] > 0 && coord[0] < 3) {
-                Visual.removerRobo(coord[0], coord[1], color);
-                coord[0] -= 1;
-                Visual.addRobo(coord[0], coord[1], color);
-                mvRobo++;
-            }
-            else {
-                miRobo++;
-                throw new MovimentoInvalidoException("up");
+            if(isAlive) {
+                if (coord[0] > 0 && coord[0] < 3) {
+                    Visual.removerRobo(coord[0], coord[1], color);
+                    coord[0] -= 1;
+                    Visual.addRobo(coord[0], coord[1], color);
+                    mvRobo++;
+                } else {
+                    miRobo++;
+                    throw new MovimentoInvalidoException("up");
+                }
             }
         }
         else if(mov.equals("down") || mov.equals("2")) {
-            if(coord[0] >= 0 && coord[0] < 2) {
-                Visual.removerRobo(coord[0], coord[1], color);
-                coord[0] += 1;
-                Visual.addRobo(coord[0], coord[1], color);
-                mvRobo++;
-            }
-            else {
-                miRobo++;
-                throw new MovimentoInvalidoException("down");
+            if(isAlive) {
+                if (coord[0] >= 0 && coord[0] < 2) {
+                    Visual.removerRobo(coord[0], coord[1], color);
+                    coord[0] += 1;
+                    Visual.addRobo(coord[0], coord[1], color);
+                    mvRobo++;
+                } else {
+                    miRobo++;
+                    throw new MovimentoInvalidoException("down");
+                }
             }
         }
         else if(mov.equals("right") || mov.equals("3")) {
-            if(coord[1] >= 0 && coord[1] < 2) {
-                Visual.removerRobo(coord[0], coord[1], color);
-                coord[1] += 1;
-                Visual.addRobo(coord[0], coord[1], color);
-                mvRobo++;
-            }
-            else {
-                miRobo++;
-                throw new MovimentoInvalidoException("right");
+            if(isAlive) {
+                if (coord[1] >= 0 && coord[1] < 2) {
+                    Visual.removerRobo(coord[0], coord[1], color);
+                    coord[1] += 1;
+                    Visual.addRobo(coord[0], coord[1], color);
+                    mvRobo++;
+                } else {
+                    miRobo++;
+                    throw new MovimentoInvalidoException("right");
+                }
             }
         }
         else if(mov.equals("left") || mov.equals("4")) {
-            if(coord[1] > 0 && coord[1] < 3) {
-                Visual.removerRobo(coord[0], coord[1], color);
-                coord[1] -= 1;
-                Visual.addRobo(coord[0], coord[1], color);
-                mvRobo++;
-            }
-            else {
-                miRobo++;
-                throw new MovimentoInvalidoException("left");
+            if(isAlive) {
+                if (coord[1] > 0 && coord[1] < 3) {
+                    Visual.removerRobo(coord[0], coord[1], color);
+                    coord[1] -= 1;
+                    Visual.addRobo(coord[0], coord[1], color);
+                    mvRobo++;
+                } else {
+                    miRobo++;
+                    throw new MovimentoInvalidoException("left");
+                }
             }
         }
         else{//Para quando o usuario não utilizar nenhuma das opções
